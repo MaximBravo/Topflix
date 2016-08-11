@@ -9,5 +9,7 @@
 
     <string name="switch_text_off">Rating</string>
 
+    <string name="rating_title">Rating:</string>
+    <string name="release_date">Release Date:</string>
 
 </resources>

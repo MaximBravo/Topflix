@@ -29,7 +29,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:text="Rating:"
+                    android:text="@string/rating_title"
                     android:gravity="center"
                     android:textStyle="bold" />
 
@@ -45,7 +45,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:text="Release Date:"
+                    android:text="@string/release_date"
                     android:gravity="center"
                     android:textStyle="bold" />
 
