@@ -1,0 +1,10 @@
+
+ImageView imageView = (ImageView) findViewById(R.id.image);
+
+You can use Picasso to easily load album art thumbnails into your views using:
+Picasso.with(getApplicationContext()).load("http://i.imgur.com/DvpvklR.png").into(imageView);
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />

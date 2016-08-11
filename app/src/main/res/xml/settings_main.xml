@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/colorBackgroud">
+    <SwitchPreference
+        android:key="popular"
+        android:title="Sort by "
+        android:summaryOff="@string/switch_text_off"
+        android:summaryOn="@string/switch_text_on"
+        android:defaultValue="true" />
+
+</PreferenceScreen>
