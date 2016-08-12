@@ -117,7 +117,7 @@ public class MovieDataExtracter {
         return output.toString();
     }
 
-
+    private static ArrayList<String> ids = new ArrayList<String>();
     private static List<Movie> extractFeatureFromJson(String mJ) {
 
         String movieJSON = null;
@@ -174,6 +174,7 @@ public class MovieDataExtracter {
                 String date = getPrettyDate(currentNews.getString("release_date"));
                 //String date = getCurrentDate();
                 String id = currentNews.getString("id");
+                ids.add(id);
                 //String trailer
 
                 Movie movie = new Movie(url, title, description, rating, date, detailUrl);
@@ -189,6 +190,50 @@ public class MovieDataExtracter {
         }
 
         return movies;
+    }
+
+    public static ArrayList<String> getTrailers(int position){
+        String trailerJson = null;
+
+        try {
+            trailerJson = makeHttpRequest(createUrl("http://api.themoviedb.org/3/movie/" + ids.get(position) + "/videos?api_key=" + MoviesActivity.apiKey));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (TextUtils.isEmpty(trailerJson)) {
+            return null;
+        }
+
+        List<String> trailers = new ArrayList<>();
+
+        // Try to parse the JSON response string. If there's a problem with the way the JSON
+        // is formatted, a JSONException exception object will be thrown.
+        // Catch the exception so the app doesn't crash, and print the error message to the logs.
+        try {
+
+            // Create a JSONObject from the JSON response string
+            JSONObject baseJsonResponse = new JSONObject(trailerJson);
+
+            JSONArray results = baseJsonResponse.getJSONArray("results");
+
+            for (int i = 0; i < results.length(); i++) {
+                JSONObject currentTrailer = results.getJSONObject(i);
+
+                String key = currentTrailer.getString("key");
+                //String trailer
+
+
+                trailers.add(key);
+            }
+
+        } catch (JSONException e) {
+            // If an error is thrown when executing any of the above statements in the "try" block,
+            // catch the exception here, so the app doesn't crash. Print a log message
+            // with the message from the exception.
+            Log.e("QueryUtils", "Problem parsing the trailer JSON results", e);
+        }
+        return (ArrayList<String>) trailers;
     }
 
     public static String getPrettyDate(String uD){

@@ -50,7 +50,7 @@ public class MoviesActivity extends AppCompatActivity implements LoaderManager.L
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 //TODO: add detail activity intent
                 //Intent intent = new Intent(getApplicationContext(), DetailMovieActivity.class);
-                Intent intent = new Intent(getApplicationContext(), TrailerActivity.class);
+                Intent intent = new Intent(getApplicationContext(), TrailerItemActivity.class);
                 intent.putExtra(EXTRA_MESSAGE, position);
                 startActivity(intent);
             }
