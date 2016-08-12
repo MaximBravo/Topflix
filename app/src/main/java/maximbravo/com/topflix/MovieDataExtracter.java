@@ -173,7 +173,8 @@ public class MovieDataExtracter {
                 String rating = "" + currentNews.getDouble("vote_average");
                 String date = getPrettyDate(currentNews.getString("release_date"));
                 //String date = getCurrentDate();
-
+                String id = currentNews.getString("id");
+                //String trailer
 
                 Movie movie = new Movie(url, title, description, rating, date, detailUrl);
 
