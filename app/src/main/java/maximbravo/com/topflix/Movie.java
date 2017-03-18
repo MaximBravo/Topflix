@@ -1,5 +1,7 @@
 package maximbravo.com.topflix;
 
+import java.util.HashMap;
+
 /**
  * Created by wendy on 8/9/2016.
  */
@@ -22,13 +24,20 @@ public class Movie {
     //Detail Image url
     private String mDetailImageUrl;
 
-    public Movie(String i, String t, String ds, String r, String d, String di){
+    public HashMap<String, String> getTrailers() {
+        return mTrailers;
+    }
+
+    private HashMap<String, String> mTrailers;
+
+    public Movie(String i, String t, String ds, String r, String d, String di, HashMap<String, String> trail){
         mImageUrl = i;
         mTitle = t;
         mDescription = ds;
         mRating = r;
         mDate = d;
         mDetailImageUrl = di;
+        mTrailers = trail;
     }
 
     public String getImageUrl() {

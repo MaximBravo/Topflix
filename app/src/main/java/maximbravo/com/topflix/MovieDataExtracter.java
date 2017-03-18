@@ -13,12 +13,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -168,15 +170,19 @@ public class MovieDataExtracter {
                 String url = baseURL + size + end;
 
                 String detailUrl = baseURL + detailSize + end;
+                //String title = currentNews.getString("original_title");
                 String title = currentNews.getString("original_title");
+
                 String description = "    " + currentNews.getString("overview");
                 String rating = "" + currentNews.getDouble("vote_average");
                 String date = getPrettyDate(currentNews.getString("release_date"));
                 //String date = getCurrentDate();
                 String id = currentNews.getString("id");
-                //String trailer
+                String trailerJson = makeHttpRequest(createUrl("http://api.themoviedb.org/3/movie/" + id + "/videos?api_key=" + MoviesActivity.apiKey));
+                HashMap<String, String> trailers = extractTrailers(trailerJson);
+                //String trailer = currentNews.getString("overview");
 
-                Movie movie = new Movie(url, title, description, rating, date, detailUrl);
+                Movie movie = new Movie(url, title, description, rating, date, detailUrl, trailers);//, trailer);
 
                 movies.add(movie);
             }
@@ -185,10 +191,29 @@ public class MovieDataExtracter {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash. Print a log message
             // with the message from the exception.
-            Log.e("QueryUtils", "Problem parsing the earthquake JSON results", e);
+            Log.e("QueryUtils", "Problem getting trailer json", e);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         return movies;
+    }
+
+    private static HashMap<String, String> extractTrailers(String trailerJson) {
+        HashMap<String, String> trailerList = new HashMap<>();
+        try {
+            JSONObject baseJsonResponse = new JSONObject(trailerJson);
+            JSONArray results = baseJsonResponse.getJSONArray("results");
+            for (int i = 0; i < results.length(); i++) {
+                JSONObject currentMovie = results.getJSONObject(i);
+                String name = currentMovie.getString("name");
+                String key = currentMovie.getString("key");
+                trailerList.put(name, key);
+            }
+        } catch (JSONException e){
+            Log.e("MoveDataExtracter", "Problem extracting trailers");
+        }
+        return trailerList;
     }
 
     public static String getPrettyDate(String uD){
