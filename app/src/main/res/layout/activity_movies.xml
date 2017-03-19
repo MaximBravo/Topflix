@@ -16,7 +16,7 @@
     <GridView
 
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:background="@color/colorBackgroud"
+        android:background="@color/colorBackground"
         android:id="@+id/grid_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

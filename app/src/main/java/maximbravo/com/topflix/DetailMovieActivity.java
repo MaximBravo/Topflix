@@ -11,11 +11,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 
-/**
- * Created by wendy on 8/10/2016.
- */
 public class DetailMovieActivity extends AppCompatActivity {
-    private int position;
     private HashMap<String, String> trailers;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +19,7 @@ public class DetailMovieActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_detail);
 
         Intent intent = getIntent();
-        position = intent.getIntExtra(MoviesActivity.EXTRA_MESSAGE, -1);
+        int position = intent.getIntExtra(MoviesActivity.EXTRA_MESSAGE, -1);
         trailers = new HashMap<>();
         loadContent(position);
 

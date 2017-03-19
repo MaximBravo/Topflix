@@ -18,11 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static android.R.id.list;
-
-/**
- * Created by wendy on 8/12/2016.
- */
 public class TrailerActivity extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener {
 
     private static final int RECOVERY_REQUEST = 1;
@@ -52,7 +47,6 @@ public class TrailerActivity extends YouTubeBaseActivity implements YouTubePlaye
         final SimpleArrayAdapter adapter = new SimpleArrayAdapter(this,
                 android.R.layout.simple_list_item_1, list);
         listview.setAdapter(adapter);
-
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {

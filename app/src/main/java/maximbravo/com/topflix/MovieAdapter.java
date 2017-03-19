@@ -1,28 +1,26 @@
 package maximbravo.com.topflix;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-/**
- * Created by wendy on 8/9/2016.
- */
 public class MovieAdapter extends ArrayAdapter<Movie> {
 
     public MovieAdapter(Context context, List<Movie> movie) {
         super(context, 0, movie);
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
         View gridViewItem = convertView;
         if (gridViewItem == null) {
@@ -36,7 +34,9 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
 //        item.setLayoutParams(new GridView.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
         ImageView imageView = (ImageView) gridViewItem.findViewById(R.id.thumbnail_image);
-        Picasso.with(getContext()).load(currentMovie.getImageUrl()).into(imageView);
+        if (currentMovie != null) {
+            Picasso.with(getContext()).load(currentMovie.getImageUrl()).into(imageView);
+        }
 //        imageView.setLayoutParams(new GridView.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
 
