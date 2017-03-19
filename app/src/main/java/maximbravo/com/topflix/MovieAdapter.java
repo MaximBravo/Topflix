@@ -40,24 +40,24 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
 //        imageView.setLayoutParams(new GridView.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
 
-        TextView titleView = (TextView) gridViewItem.findViewById(R.id.title_text);
-        String title = currentMovie.getTitle();
-        titleView.setText(title);
+//        TextView titleView = (TextView) gridViewItem.findViewById(R.id.title_text);
+//        String title = currentMovie.getTitle();
+//        titleView.setText(title);
  //       titleView.setLayoutParams(new GridView.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
-        TextView descriptionView = (TextView) gridViewItem.findViewById(R.id.description_text);
-        String description = currentMovie.getDescription();
-        descriptionView.setText(description);
+//        TextView descriptionView = (TextView) gridViewItem.findViewById(R.id.description_text);
+//        String description = currentMovie.getDescription();
+//        descriptionView.setText(description);
  //       descriptionView.setLayoutParams(new GridView.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
-        TextView ratingView = (TextView) gridViewItem.findViewById(R.id.rating_text);
-        String rating = currentMovie.getRating();
-        ratingView.setText(rating);
+//        TextView ratingView = (TextView) gridViewItem.findViewById(R.id.rating_text);
+//        String rating = currentMovie.getRating();
+//        ratingView.setText(rating);
 //        ratingView.setLayoutParams(new GridView.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
-        TextView dateView = (TextView) gridViewItem.findViewById(R.id.date_text);
-        String date = currentMovie.getDate();
-        dateView.setText(date);
+//        TextView dateView = (TextView) gridViewItem.findViewById(R.id.date_text);
+//        String date = currentMovie.getDate();
+//        dateView.setText(date);
 //        dateView.setLayoutParams(new GridView.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
 
