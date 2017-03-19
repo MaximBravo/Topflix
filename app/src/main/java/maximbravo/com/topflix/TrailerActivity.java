@@ -27,7 +27,7 @@ public class TrailerActivity extends YouTubeBaseActivity implements YouTubePlaye
 
     private static final int RECOVERY_REQUEST = 1;
     private YouTubePlayerView youTubeView;
-
+    public static YouTubePlayer youPlayer;
     private String video;
 
     @Override
@@ -40,6 +40,7 @@ public class TrailerActivity extends YouTubeBaseActivity implements YouTubePlaye
 //            video = trailers.get(key);
 //            break;
 //        }
+        youPlayer = null;
         youTubeView = (YouTubePlayerView) findViewById(R.id.youtube_view);
         youTubeView.initialize(ApiKey.YOUTUBE_API_KEY, this);
         final ListView listview = (ListView) findViewById(R.id.trailers);
@@ -63,7 +64,11 @@ public class TrailerActivity extends YouTubeBaseActivity implements YouTubePlaye
     }
 
     private void initialize(){
-        youPlayer.loadVideo(video);
+        if(youPlayer != null) {
+            youPlayer.loadVideo(video);
+        } else  {
+            youTubeView.initialize(ApiKey.YOUTUBE_API_KEY, this);
+        }
     }
     private class SimpleArrayAdapter extends ArrayAdapter<String> {
 
@@ -88,14 +93,14 @@ public class TrailerActivity extends YouTubeBaseActivity implements YouTubePlaye
         }
 
     }
-    public static YouTubePlayer youPlayer;
+
     @Override
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-        if (!b) {
+        //if (!b) {
             youPlayer = youTubePlayer;
             //youTubePlayer.cueVideo("W0I3YgFLSy8"); // Plays https://www.youtube.com/watch?v=W0I3YgFLSy8
 
-        }
+        //}
     }
 
 
