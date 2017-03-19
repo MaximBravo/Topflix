@@ -5,17 +5,11 @@ import android.content.Context;
 
 import java.util.List;
 
-/**
- * Created by wendy on 8/9/2016.
- */
+
 public class MovieLoader extends AsyncTaskLoader<List<Movie>> {
-
-    private String mUrl;
-
     public static List<Movie> moviesList;
-    public MovieLoader(Context context, String url) {
+    public MovieLoader(Context context) {
         super(context);
-        mUrl = url;
     }
 
     @Override
@@ -28,13 +22,9 @@ public class MovieLoader extends AsyncTaskLoader<List<Movie>> {
      */
     @Override
     public List<Movie> loadInBackground() {
-        if (mUrl == null) {
-            return null;
-        }
-
-        MovieDataExtracter movieDataExtracter = new MovieDataExtracter(getContext());
-        List<Movie> movies = movieDataExtracter.fetchMovieData(mUrl);
+        MovieDataExtractor movieDataExtractor = new MovieDataExtractor(getContext());
+        List<Movie> movies = movieDataExtractor.extractFeatureFromJson();
         moviesList = movies;
-        return movies;
+        return moviesList;
     }
 }

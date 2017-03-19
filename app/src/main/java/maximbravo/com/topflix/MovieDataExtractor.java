@@ -13,7 +13,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -26,35 +25,23 @@ import java.util.List;
 /**
  * Created by wendy on 8/9/2016.
  */
-public class MovieDataExtracter {
+public class MovieDataExtractor {
 
-    private static final String LOG_TAG = MovieDataExtracter.class.getSimpleName();
+    private static final String LOG_TAG = MovieDataExtractor.class.getSimpleName();
 
-    private static Context thisContext;
-    public MovieDataExtracter(Context context) {
+    private Context thisContext;
+    public MovieDataExtractor(Context context) {
         thisContext = context;
     }
 
-    public static List<Movie> fetchMovieData(String requestUrl) {
-        URL url = createUrl(requestUrl);
-
-        String jsonResponse = null;
-        try {
-            jsonResponse = makeHttpRequest(url);
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Problem making the HTTP request.", e);
-        }
-
-        List<Movie> movies = extractFeatureFromJson(jsonResponse);
-
-        // Return the list of {@link NewsEvent}s
-        return movies;
-    }
+//    public List<Movie> fetchMovieData() {
+//        return extractFeatureFromJson();
+//    }
 
     /**
      * Returns new URL object from the given string URL.
      */
-    private static URL createUrl(String stringUrl) {
+    private URL createUrl(String stringUrl) {
         URL url = null;
         try {
             url = new URL(stringUrl);
@@ -64,7 +51,7 @@ public class MovieDataExtracter {
         return url;
     }
 
-    private static String makeHttpRequest(URL url) throws IOException {
+    private String makeHttpRequest(URL url) throws IOException {
         String jsonResponse = "";
 
         // If the URL is null, then return early.
@@ -105,7 +92,7 @@ public class MovieDataExtracter {
         return jsonResponse;
     }
 
-    private static String readFromStream(InputStream inputStream) throws IOException {
+    private String readFromStream(InputStream inputStream) throws IOException {
         StringBuilder output = new StringBuilder();
         if (inputStream != null) {
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
@@ -120,28 +107,17 @@ public class MovieDataExtracter {
     }
 
 
-    private static List<Movie> extractFeatureFromJson(String mJ) {
+    public List<Movie> extractFeatureFromJson() {
 
         String movieJSON = null;
-        boolean setting;
+        String sortingOrder = "top_rated";
         if (PreferenceManager.getDefaultSharedPreferences(thisContext).getBoolean("popular", true)) {
-            setting = true;
-        } else {
-            setting = false;
+            sortingOrder = "popular";
         }
-        if(setting) {
-            try {
-                movieJSON = makeHttpRequest(createUrl("http://api.themoviedb.org/3/movie/popular?api_key=" + MoviesActivity.apiKey));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                movieJSON = makeHttpRequest(createUrl("http://api.themoviedb.org/3/movie/top_rated?api_key=" + MoviesActivity.apiKey));
-            } catch (IOException e) {
-                e.printStackTrace();
-
-            }
+        try {
+            movieJSON = makeHttpRequest(createUrl("http://api.themoviedb.org/3/movie/"+ sortingOrder+ "?api_key=" + MoviesActivity.apiKey));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         if (TextUtils.isEmpty(movieJSON)) {
             return null;
@@ -199,7 +175,7 @@ public class MovieDataExtracter {
         return movies;
     }
 
-    private static HashMap<String, String> extractTrailers(String trailerJson) {
+    private HashMap<String, String> extractTrailers(String trailerJson) {
         HashMap<String, String> trailerList = new HashMap<>();
         try {
             JSONObject baseJsonResponse = new JSONObject(trailerJson);
@@ -216,7 +192,7 @@ public class MovieDataExtracter {
         return trailerList;
     }
 
-    public static String getPrettyDate(String uD){
+    public String getPrettyDate(String uD){
         String uglyDate = uD;
         String[] datePieced = uglyDate.split("-");
         String month;
@@ -237,7 +213,7 @@ public class MovieDataExtracter {
         return prettyDate;
     }
 
-    public static String getCurrentDate() {
+    public String getCurrentDate() {
         long dates = System.currentTimeMillis();
 
         SimpleDateFormat sdf = new SimpleDateFormat("MMM MM dd, yyyy h:mm a");

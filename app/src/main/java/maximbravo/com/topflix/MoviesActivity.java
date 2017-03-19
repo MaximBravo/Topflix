@@ -22,8 +22,8 @@ import java.util.List;
 public class MoviesActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Movie>> {
 
     public static String apiKey = ApiKey.apiKey;
-    private static String TMDB_REQUEST_URL =
-            "http://api.themoviedb.org/3/movie/popular?api_key=" + apiKey;
+//    private static String TMDB_REQUEST_URL =
+//            "http://api.themoviedb.org/3/movie/popular?api_key=" + apiKey;
 
     private static final int MOVIE_LOADER_ID = 1;
 
@@ -86,7 +86,7 @@ public class MoviesActivity extends AppCompatActivity implements LoaderManager.L
     @Override
     public Loader<List<Movie>> onCreateLoader(int i, Bundle bundle) {
 
-            return new MovieLoader(this, TMDB_REQUEST_URL);
+            return new MovieLoader(this);
     }
 
     @Override
