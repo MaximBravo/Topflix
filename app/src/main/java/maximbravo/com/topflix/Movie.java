@@ -1,5 +1,6 @@
 package maximbravo.com.topflix;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -21,6 +22,15 @@ public class Movie {
     //Release date of Movie
     private String mDate;
 
+    public ArrayList<String> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(ArrayList<String> reviews) {
+        this.reviews = reviews;
+    }
+
+    private ArrayList<String> reviews;
     //Detail Image url
     private String mDetailImageUrl;
 
@@ -30,7 +40,7 @@ public class Movie {
 
     private HashMap<String, String> mTrailers;
 
-    public Movie(String i, String t, String ds, String r, String d, String di, HashMap<String, String> trail){
+    public Movie(String i, String t, String ds, String r, String d, String di, HashMap<String, String> trail, ArrayList<String> rev){
         mImageUrl = i;
         mTitle = t;
         mDescription = ds;
@@ -38,6 +48,7 @@ public class Movie {
         mDate = d;
         mDetailImageUrl = di;
         mTrailers = trail;
+        reviews = rev;
     }
 
     public String getImageUrl() {

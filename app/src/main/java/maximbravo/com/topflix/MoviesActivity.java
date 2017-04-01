@@ -85,8 +85,7 @@ public class MoviesActivity extends AppCompatActivity implements LoaderManager.L
 
     @Override
     public Loader<List<Movie>> onCreateLoader(int i, Bundle bundle) {
-
-            return new MovieLoader(this);
+        return new MovieLoader(this);
     }
 
     @Override

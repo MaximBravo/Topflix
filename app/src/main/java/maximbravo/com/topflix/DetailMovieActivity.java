@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DetailMovieActivity extends AppCompatActivity {
@@ -43,6 +44,12 @@ public class DetailMovieActivity extends AppCompatActivity {
         detailDescriptionView.setText(description);
         //       descriptionView.setLayoutParams(new GridView.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
+        TextView reviewsView = (TextView) findViewById(R.id.reviews);
+        ArrayList<String> reviews = currentMovie.getReviews();
+        String extractedReviews = extractReviews(reviews);
+        reviewsView.setText(extractedReviews);
+
+
         TextView detailRatingView = (TextView) findViewById(R.id.detail_rating);
         String rating = currentMovie.getRating();
         detailRatingView.setText(rating);
@@ -53,6 +60,21 @@ public class DetailMovieActivity extends AppCompatActivity {
         detailDateView.setText(date);
 
         trailers = currentMovie.getTrailers();
+    }
+
+    private String extractReviews(ArrayList<String> reviews) {
+        String result = "";
+        for(int i = 0; i < reviews.size(); i++){
+            if(i != 0){
+                result += "\n\n";
+            }
+            String currentReview = reviews.get(i);
+            int divider = currentReview.indexOf("----");
+            String author = currentReview.substring(0, divider);
+            String content = currentReview.substring(divider+4, currentReview.length());
+            result += author +"\n"+content;
+        }
+        return result;
     }
 
     public void launchTrailers(View view){

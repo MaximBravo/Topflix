@@ -73,7 +73,10 @@
             android:id="@+id/detail_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
+        <TextView
+            android:id="@+id/reviews"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
         <Button
             android:onClick="launchTrailers"

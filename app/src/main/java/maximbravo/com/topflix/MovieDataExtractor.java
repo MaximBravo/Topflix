@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static android.R.attr.key;
+import static android.R.attr.name;
+
 /**
  * Created by wendy on 8/9/2016.
  */
@@ -157,8 +160,9 @@ public class MovieDataExtractor {
                 String trailerJson = makeHttpRequest(createUrl("http://api.themoviedb.org/3/movie/" + id + "/videos?api_key=" + MoviesActivity.apiKey));
                 HashMap<String, String> trailers = extractTrailers(trailerJson);
                 //String trailer = currentNews.getString("overview");
-
-                Movie movie = new Movie(url, title, description, rating, date, detailUrl, trailers);//, trailer);
+                String reviewJson = makeHttpRequest(createUrl("http://api.themoviedb.org/3/movie/" + id + "/reviews?api_key=" + MoviesActivity.apiKey));
+                ArrayList<String> reviews = extractReviews(reviewJson);
+                Movie movie = new Movie(url, title, description, rating, date, detailUrl, trailers, reviews);
 
                 movies.add(movie);
             }
@@ -190,6 +194,23 @@ public class MovieDataExtractor {
             Log.e("MoveDataExtracter", "Problem extracting trailers");
         }
         return trailerList;
+    }
+
+    private ArrayList<String> extractReviews(String reviewJson) {
+        ArrayList<String> reviewList = new ArrayList<>();
+        try {
+            JSONObject baseJsonResponse = new JSONObject(reviewJson);
+            JSONArray results = baseJsonResponse.getJSONArray("results");
+            for (int i = 0; i < results.length(); i++) {
+                JSONObject currentReview = results.getJSONObject(i);
+                String author = currentReview.getString("author");
+                String content = currentReview.getString("content");
+                reviewList.add(i, author+"----"+content);
+            }
+        } catch (JSONException e){
+            Log.e("MoveDataExtracter", "Problem extracting trailers");
+        }
+        return reviewList;
     }
 
     public String getPrettyDate(String uD){
