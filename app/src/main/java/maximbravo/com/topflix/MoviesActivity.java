@@ -5,6 +5,7 @@ import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -19,6 +20,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.R.attr.defaultValue;
+import static android.support.v7.widget.AppCompatDrawableManager.get;
+
 public class MoviesActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Movie>> {
 
     public static String apiKey = ApiKey.apiKey;
@@ -30,12 +34,21 @@ public class MoviesActivity extends AppCompatActivity implements LoaderManager.L
     private MovieAdapter mAdapter;
 
     private TextView mEmptyStateTextView;
-
+    public static ArrayList<Integer> favorites;
     public final static String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movies);
+
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        String favoritesString = sharedPref.getString("favorites", "null");
+        if(favoritesString.equals("null")){
+            favorites = new ArrayList<>();
+            updateFavorites();
+        } else {
+            favorites = decodeFavorites(favoritesString);
+        }
         GridView moviesGridView = (GridView) findViewById(R.id.grid_view);
 
         mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
@@ -83,6 +96,30 @@ public class MoviesActivity extends AppCompatActivity implements LoaderManager.L
         }
     }
 
+    public void updateFavorites(){
+        SharedPreferences sharedPref = this.getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("favorites", encodeFavorites());
+        editor.commit();
+    }
+    public String encodeFavorites(){
+        String result = "";
+        for(int i = 0; i < favorites.size(); i++){
+            result+= favorites.get(i) + ',';
+        }
+        return result;
+    }
+    public ArrayList<Integer> decodeFavorites(String favString){
+        ArrayList<Integer> result = new ArrayList<>();
+        String[] favs = favString.split(",");
+        for(int i = 0; i < favs.length; i++){
+            String current = favs[i];
+            if(current.length()!= 0){
+                result.add(i, Integer.parseInt(current));
+            }
+        }
+        return result;
+    }
     @Override
     public Loader<List<Movie>> onCreateLoader(int i, Bundle bundle) {
         return new MovieLoader(this);

@@ -9,4 +9,5 @@
         android:summaryOn="@string/switch_text_on"
         android:defaultValue="true" />
 
+
 </PreferenceScreen>

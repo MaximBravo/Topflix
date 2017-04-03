@@ -214,6 +214,9 @@ public class MovieDataExtractor {
     }
 
     public String getPrettyDate(String uD){
+        if(uD.length() == 0){
+            return "Pretty date could not be retrieved";
+        }
         String uglyDate = uD;
         String[] datePieced = uglyDate.split("-");
         String month;
