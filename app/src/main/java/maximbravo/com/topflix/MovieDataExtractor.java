@@ -2,6 +2,7 @@ package maximbravo.com.topflix;
 
 import android.content.Context;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -19,9 +20,13 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
+import static android.R.attr.id;
 import static android.R.attr.key;
 import static android.R.attr.name;
 
@@ -112,21 +117,27 @@ public class MovieDataExtractor {
 
     public List<Movie> extractFeatureFromJson() {
 
-        String movieJSON = null;
+        String movieJSON = "";
         String sortingOrder = "top_rated";
         if (PreferenceManager.getDefaultSharedPreferences(thisContext).getBoolean("popular", true)) {
             sortingOrder = "popular";
         }
-        try {
-            movieJSON = makeHttpRequest(createUrl("http://api.themoviedb.org/3/movie/"+ sortingOrder+ "?api_key=" + MoviesActivity.apiKey));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (TextUtils.isEmpty(movieJSON)) {
-            return null;
+        List<Movie> movies = new ArrayList<>();
+        if(PreferenceManager.getDefaultSharedPreferences(thisContext).getBoolean("showFavorites", false)) {
+            // load favorites
+            movies = getFavoriteMovies();
+        } else {
+            try {
+                movieJSON = makeHttpRequest(createUrl("http://api.themoviedb.org/3/movie/" + sortingOrder + "?api_key=" + MoviesActivity.apiKey));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (TextUtils.isEmpty(movieJSON)) {
+                return null;
+            }
         }
 
-        List<Movie> movies = new ArrayList<>();
+
 
         // Try to parse the JSON response string. If there's a problem with the way the JSON
         // is formatted, a JSONException exception object will be thrown.
@@ -139,31 +150,34 @@ public class MovieDataExtractor {
             JSONArray results = baseJsonResponse.getJSONArray("results");
 
             for (int i = 0; i < results.length(); i++) {
-                JSONObject currentNews = results.getJSONObject(i);
+                JSONObject currentMovie = results.getJSONObject(i);
 
                 String baseURL = "http://image.tmdb.org/t/p/";
                 String size = "w500";
                 String detailSize = "w780";
-                String end = currentNews.getString("poster_path");
-                String backdropEnd = currentNews.getString("backdrop_path");
+                String end = currentMovie.getString("poster_path");
+                String backdropEnd = currentMovie.getString("backdrop_path");
                 String url = baseURL + size + end;
 
                 String detailUrl = baseURL + detailSize + end;
-                //String title = currentNews.getString("original_title");
-                String title = currentNews.getString("original_title");
+                //String title = currentMovie.getString("original_title");
+                String title = currentMovie.getString("original_title");
 
-                String description = "    " + currentNews.getString("overview");
-                String rating = "" + currentNews.getDouble("vote_average");
-                String date = getPrettyDate(currentNews.getString("release_date"));
+                String description = "    " + currentMovie.getString("overview");
+                String rating = "" + currentMovie.getDouble("vote_average");
+                String date = getPrettyDate(currentMovie.getString("release_date"));
                 //String date = getCurrentDate();
-                String id = currentNews.getString("id");
+                String id = currentMovie.getString("id");
                 String trailerJson = makeHttpRequest(createUrl("http://api.themoviedb.org/3/movie/" + id + "/videos?api_key=" + MoviesActivity.apiKey));
                 HashMap<String, String> trailers = extractTrailers(trailerJson);
-                //String trailer = currentNews.getString("overview");
+                //String trailer = currentMovie.getString("overview");
                 String reviewJson = makeHttpRequest(createUrl("http://api.themoviedb.org/3/movie/" + id + "/reviews?api_key=" + MoviesActivity.apiKey));
                 ArrayList<String> reviews = extractReviews(reviewJson);
-                Movie movie = new Movie(url, title, description, rating, date, detailUrl, trailers, reviews);
 
+                Movie movie = new Movie(url, title, description, rating, date, detailUrl, trailers, reviews, Integer.parseInt(id), false);
+                if(MoviesActivity.favorites.contains(id)){
+                    movie.setFav(true);
+                }
                 movies.add(movie);
             }
 
@@ -177,6 +191,57 @@ public class MovieDataExtractor {
         }
 
         return movies;
+    }
+
+    private List<Movie> getFavoriteMovies() {
+        List<Movie> result = new ArrayList<>();
+        for(int i = 0; i < MoviesActivity.favorites.size(); i++) {
+            int idMovie = MoviesActivity.favorites.get(i);
+            String currentMovieJson = "";
+            try {
+                currentMovieJson = makeHttpRequest(createUrl("http://api.themoviedb.org/3/movie/" + idMovie + "?api_key=" + MoviesActivity.apiKey));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if(!currentMovieJson.equals("")){
+
+                JSONObject currentMovie = null;
+                try {
+                    currentMovie = new JSONObject(currentMovieJson);
+                    String baseURL = "http://image.tmdb.org/t/p/";
+                    String size = "w500";
+                    String detailSize = "w780";
+                    String end = currentMovie.getString("poster_path");
+                    String backdropEnd = currentMovie.getString("backdrop_path");
+                    String url = baseURL + size + end;
+
+                    String detailUrl = baseURL + detailSize + end;
+                    //String title = currentMovie.getString("original_title");
+                    String title = currentMovie.getString("original_title");
+
+                    String description = "    " + currentMovie.getString("overview");
+                    String rating = "" + currentMovie.getDouble("vote_average");
+                    String date = getPrettyDate(currentMovie.getString("release_date"));
+                    //String date = getCurrentDate();
+                    String id = currentMovie.getString("id");
+                    String trailerJson = makeHttpRequest(createUrl("http://api.themoviedb.org/3/movie/" + id + "/videos?api_key=" + MoviesActivity.apiKey));
+                    HashMap<String, String> trailers = extractTrailers(trailerJson);
+                    //String trailer = currentMovie.getString("overview");
+                    String reviewJson = makeHttpRequest(createUrl("http://api.themoviedb.org/3/movie/" + id + "/reviews?api_key=" + MoviesActivity.apiKey));
+                    ArrayList<String> reviews = extractReviews(reviewJson);
+                    Movie movie = new Movie(url, title, description, rating, date, detailUrl, trailers, reviews, Integer.parseInt(id), true);
+
+                    result.add(movie);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }
+        return result;
     }
 
     private HashMap<String, String> extractTrailers(String trailerJson) {

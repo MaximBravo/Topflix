@@ -22,6 +22,8 @@ public class Movie {
     //Release date of Movie
     private String mDate;
 
+    private int mMovieId;
+
     public ArrayList<String> getReviews() {
         return reviews;
     }
@@ -34,13 +36,14 @@ public class Movie {
     //Detail Image url
     private String mDetailImageUrl;
 
+    private boolean fav;
     public HashMap<String, String> getTrailers() {
         return mTrailers;
     }
 
     private HashMap<String, String> mTrailers;
 
-    public Movie(String i, String t, String ds, String r, String d, String di, HashMap<String, String> trail, ArrayList<String> rev){
+    public Movie(String i, String t, String ds, String r, String d, String di, HashMap<String, String> trail, ArrayList<String> rev, int id, boolean f){
         mImageUrl = i;
         mTitle = t;
         mDescription = ds;
@@ -49,6 +52,16 @@ public class Movie {
         mDetailImageUrl = di;
         mTrailers = trail;
         reviews = rev;
+        mMovieId = id;
+        fav = f;
+    }
+
+    public boolean isFav() {
+        return fav;
+    }
+
+    public void setFav(boolean fav) {
+        this.fav = fav;
     }
 
     public String getImageUrl() {
@@ -68,4 +81,11 @@ public class Movie {
     }
     public String getDetailImageUrl() { return mDetailImageUrl; }
 
+    public int getmMovieId() {
+        return mMovieId;
+    }
+
+    public void setmMovieId(int mMovieId) {
+        this.mMovieId = mMovieId;
+    }
 }

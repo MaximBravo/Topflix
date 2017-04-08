@@ -96,6 +96,12 @@ public class MoviesActivity extends AppCompatActivity implements LoaderManager.L
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        updateFavorites();
+    }
+
     public void updateFavorites(){
         SharedPreferences sharedPref = this.getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -105,7 +111,7 @@ public class MoviesActivity extends AppCompatActivity implements LoaderManager.L
     public String encodeFavorites(){
         String result = "";
         for(int i = 0; i < favorites.size(); i++){
-            result+= favorites.get(i) + ',';
+            result+= favorites.get(i) + ",";
         }
         return result;
     }
@@ -127,6 +133,7 @@ public class MoviesActivity extends AppCompatActivity implements LoaderManager.L
 
     @Override
     public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> movies) {
+        updateFavorites();
         View loadingIndicator = findViewById(R.id.loading_indicator);
         loadingIndicator.setVisibility(View.GONE);
 

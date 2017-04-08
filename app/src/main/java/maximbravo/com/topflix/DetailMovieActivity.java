@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,7 +26,7 @@ public class DetailMovieActivity extends AppCompatActivity {
         loadContent(position);
 
     }
-
+    private int favoriteId = 0;
     public void loadContent(int p){
         Movie currentMovie = MovieLoader.moviesList.get(p);
 
@@ -59,7 +60,21 @@ public class DetailMovieActivity extends AppCompatActivity {
         String date = currentMovie.getDate();
         detailDateView.setText(date);
 
+        favoriteId = currentMovie.getmMovieId();
+
+        isFav = currentMovie.isFav();
+
+        updateFavText();
         trailers = currentMovie.getTrailers();
+    }
+
+    private void updateFavText() {
+        Button favButton = (Button) findViewById(R.id.fav_button);
+        if(isFav){
+            favButton.setText("Remove");
+        } else {
+            favButton.setText("Add");
+        }
     }
 
     private String extractReviews(ArrayList<String> reviews) {
@@ -81,5 +96,31 @@ public class DetailMovieActivity extends AppCompatActivity {
         Intent intent = new Intent(this, TrailerActivity.class);
         intent.putExtra("map", trailers);
         startActivity(intent);
+    }
+    private boolean isFav;
+    public void addToFavorites(View v){
+        if(isFav){
+            isFav = false;
+        } else {
+            isFav = true;
+        }
+        updateFavText();
+        //MoviesActivity.updateFavorites();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(isFav){
+            if(!MoviesActivity.favorites.contains(favoriteId)) {
+                MoviesActivity.favorites.add(favoriteId);
+            }
+        }else{
+            for(int i = 0; i < MoviesActivity.favorites.size(); i++) {
+                if(MoviesActivity.favorites.get(i).equals(favoriteId)) {
+                    MoviesActivity.favorites.remove(i);
+                }
+            }
+        }
     }
 }

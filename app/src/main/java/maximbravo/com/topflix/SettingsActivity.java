@@ -40,6 +40,8 @@ public class SettingsActivity extends AppCompatActivity {
 
             Preference popularity = findPreference("popular");
             bindPreferenceSummaryToValue(popularity);
+            Preference showFavorites = findPreference("showFavorites");
+            bindPreferenceSummaryToValue(showFavorites);
 
 
         }

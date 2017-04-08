@@ -8,6 +8,11 @@
         android:summaryOff="@string/switch_text_off"
         android:summaryOn="@string/switch_text_on"
         android:defaultValue="true" />
-
+    <SwitchPreference
+        android:key="showFavorites"
+        android:title="Favorites List "
+        android:summaryOff="Dont show"
+        android:summaryOn="Show"
+        android:defaultValue="false" />
 
 </PreferenceScreen>
