@@ -30,9 +30,6 @@ import static android.R.attr.id;
 import static android.R.attr.key;
 import static android.R.attr.name;
 
-/**
- * Created by wendy on 8/9/2016.
- */
 public class MovieDataExtractor {
 
     private static final String LOG_TAG = MovieDataExtractor.class.getSimpleName();
@@ -128,7 +125,8 @@ public class MovieDataExtractor {
             movies = getFavoriteMovies();
         } else {
             try {
-                movieJSON = makeHttpRequest(createUrl("http://api.themoviedb.org/3/movie/" + sortingOrder + "?api_key=" + MoviesActivity.apiKey));
+                movieJSON = makeHttpRequest(createUrl("http://api.themoviedb.org/3/movie/"
+                        + sortingOrder + "?api_key=" + MoviesActivity.apiKey));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -168,13 +166,16 @@ public class MovieDataExtractor {
                 String date = getPrettyDate(currentMovie.getString("release_date"));
                 //String date = getCurrentDate();
                 String id = currentMovie.getString("id");
-                String trailerJson = makeHttpRequest(createUrl("http://api.themoviedb.org/3/movie/" + id + "/videos?api_key=" + MoviesActivity.apiKey));
+                String trailerJson = makeHttpRequest(createUrl("http://api.themoviedb.org/3/movie/"
+                        + id + "/videos?api_key=" + MoviesActivity.apiKey));
                 HashMap<String, String> trailers = extractTrailers(trailerJson);
                 //String trailer = currentMovie.getString("overview");
-                String reviewJson = makeHttpRequest(createUrl("http://api.themoviedb.org/3/movie/" + id + "/reviews?api_key=" + MoviesActivity.apiKey));
+                String reviewJson = makeHttpRequest(createUrl("http://api.themoviedb.org/3/movie/"
+                        + id + "/reviews?api_key=" + MoviesActivity.apiKey));
                 ArrayList<String> reviews = extractReviews(reviewJson);
 
-                Movie movie = new Movie(url, title, description, rating, date, detailUrl, trailers, reviews, Integer.parseInt(id), false);
+                Movie movie = new Movie(url, title, description, rating, date, detailUrl, trailers,
+                        reviews, Integer.parseInt(id), false);
                 if(MoviesActivity.favorites.contains(id)){
                     movie.setFav(true);
                 }
@@ -195,11 +196,13 @@ public class MovieDataExtractor {
 
     private List<Movie> getFavoriteMovies() {
         List<Movie> result = new ArrayList<>();
-        for(int i = 0; i < MoviesActivity.favorites.size(); i++) {
-            int idMovie = MoviesActivity.favorites.get(i);
+        //for(int i = 0; i < MoviesActivity.favorites.size(); i++) {
+        for(int idMovie : MoviesActivity.favorites) {
+            //int idMovie = MoviesActivity.favorites.get(i);
             String currentMovieJson = "";
             try {
-                currentMovieJson = makeHttpRequest(createUrl("http://api.themoviedb.org/3/movie/" + idMovie + "?api_key=" + MoviesActivity.apiKey));
+                currentMovieJson = makeHttpRequest(createUrl("http://api.themoviedb.org/3/movie/"
+                        + idMovie + "?api_key=" + MoviesActivity.apiKey));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -224,12 +227,15 @@ public class MovieDataExtractor {
                     String date = getPrettyDate(currentMovie.getString("release_date"));
                     //String date = getCurrentDate();
                     String id = currentMovie.getString("id");
-                    String trailerJson = makeHttpRequest(createUrl("http://api.themoviedb.org/3/movie/" + id + "/videos?api_key=" + MoviesActivity.apiKey));
+                    String trailerJson = makeHttpRequest(createUrl("http://api.themoviedb.org/3/movie/"
+                            + id + "/videos?api_key=" + MoviesActivity.apiKey));
                     HashMap<String, String> trailers = extractTrailers(trailerJson);
                     //String trailer = currentMovie.getString("overview");
-                    String reviewJson = makeHttpRequest(createUrl("http://api.themoviedb.org/3/movie/" + id + "/reviews?api_key=" + MoviesActivity.apiKey));
+                    String reviewJson = makeHttpRequest(createUrl("http://api.themoviedb.org/3/movie/"
+                            + id + "/reviews?api_key=" + MoviesActivity.apiKey));
                     ArrayList<String> reviews = extractReviews(reviewJson);
-                    Movie movie = new Movie(url, title, description, rating, date, detailUrl, trailers, reviews, Integer.parseInt(id), true);
+                    Movie movie = new Movie(url, title, description, rating, date, detailUrl, trailers,
+                            reviews, Integer.parseInt(id), true);
 
                     result.add(movie);
                 } catch (JSONException e) {

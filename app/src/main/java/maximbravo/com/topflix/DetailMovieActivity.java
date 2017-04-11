@@ -27,9 +27,10 @@ public class DetailMovieActivity extends AppCompatActivity {
 
     }
     private int favoriteId = 0;
+    private int currentMoviePosition = -1;
     public void loadContent(int p){
         Movie currentMovie = MovieLoader.moviesList.get(p);
-
+        currentMoviePosition = p;
         ImageView detailImageView = (ImageView) findViewById(R.id.detail_image);
         Picasso.with(getApplicationContext()).load(currentMovie.getDetailImageUrl()).into(detailImageView);
 //        imageView.setLayoutParams(new GridView.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -113,14 +114,22 @@ public class DetailMovieActivity extends AppCompatActivity {
         super.onBackPressed();
         if(isFav){
             if(!MoviesActivity.favorites.contains(favoriteId)) {
-                MoviesActivity.favorites.add(favoriteId);
+                MoviesActivity.addOrRemove = 0;
+                MoviesActivity.favId = favoriteId;
             }
         }else{
             for(int i = 0; i < MoviesActivity.favorites.size(); i++) {
                 if(MoviesActivity.favorites.get(i).equals(favoriteId)) {
-                    MoviesActivity.favorites.remove(i);
+                    MoviesActivity.addOrRemove = 1;
+                    MoviesActivity.favId = favoriteId;
                 }
             }
         }
+
+
+        MoviesActivity.updateFavs(this);
+//        Movie currentMovie = MovieLoader.moviesList.get(currentMoviePosition);
+//        currentMovie.setFav(!isFav);
+//        MovieLoader.moviesList.set(currentMoviePosition, currentMovie);
     }
 }

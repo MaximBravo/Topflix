@@ -1,11 +1,14 @@
 package maximbravo.com.topflix;
 
 
+import android.app.Activity;
 import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -19,6 +22,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import maximbravo.com.topflix.data.FavoritesContract;
 
 import static android.R.attr.defaultValue;
 import static android.support.v7.widget.AppCompatDrawableManager.get;
@@ -34,21 +39,21 @@ public class MoviesActivity extends AppCompatActivity implements LoaderManager.L
     private MovieAdapter mAdapter;
 
     private TextView mEmptyStateTextView;
-    public static ArrayList<Integer> favorites;
+    public static ArrayList<Integer> favorites = new ArrayList<>();
     public final static String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movies);
 
-        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-        String favoritesString = sharedPref.getString("favorites", "null");
-        if(favoritesString.equals("null")){
-            favorites = new ArrayList<>();
-            updateFavorites();
-        } else {
-            favorites = decodeFavorites(favoritesString);
-        }
+//        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+//        String favoritesString = sharedPref.getString("favorites", "null");
+//        if(favoritesString.equals("null")){
+//            favorites = new ArrayList<>();
+//            updateFavorites();
+//        } else {
+//            favorites = decodeFavorites(favoritesString);
+//        }
         GridView moviesGridView = (GridView) findViewById(R.id.grid_view);
 
         mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
@@ -97,10 +102,66 @@ public class MoviesActivity extends AppCompatActivity implements LoaderManager.L
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        favorites.clear();
+
+        Cursor cursor = getContentResolver().query(FavoritesContract.FavoritesEntry.CONTENT_URI,
+                new String[]{FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID},
+                null,
+                null,
+                null);
+        if(cursor != null) {
+            while (cursor.moveToNext()) {
+                int data = cursor.getInt(cursor.getColumnIndex(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID));
+                favorites.add(data);
+            }
+            LoaderManager loaderManager = getLoaderManager();
+            loaderManager.restartLoader(MOVIE_LOADER_ID, null, this);
+        }
+
+
+    }
+
+    public static void addToDb(Activity activity, int movieId){
+        ContentValues vals = new ContentValues();
+        vals.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID, movieId);
+        activity.getContentResolver().insert(FavoritesContract.FavoritesEntry.CONTENT_URI, vals);
+        addOrRemove = -1;
+        favId = -1;
+    }
+    public static void removeFromDb(Activity activity, int movieId) {
+        String selection = FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID + " = ?";
+        String[] selectionArgs = {""+movieId};
+        activity.getContentResolver().delete(FavoritesContract.FavoritesEntry.CONTENT_URI, selection, selectionArgs);
+        addOrRemove = -1;
+        favId = -1;
+    }
+    public static int addOrRemove = -2;
+    public static int favId;
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
-        updateFavorites();
+//        if(addOrRemove == 0){
+//            addToDb(favId);
+//        } else if(addOrRemove == 1){
+//            removeFromDb(favId);
+//        }
+        //updateFavorites();
     }
+
+    public static void updateFavs(Activity activity){
+        if(addOrRemove == 0){
+            addToDb(activity, favId);
+        } else if(addOrRemove == 1){
+            removeFromDb(activity, favId);
+        }
+    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//
+//    }
 
     public void updateFavorites(){
         SharedPreferences sharedPref = this.getPreferences(MODE_PRIVATE);
@@ -133,7 +194,7 @@ public class MoviesActivity extends AppCompatActivity implements LoaderManager.L
 
     @Override
     public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> movies) {
-        updateFavorites();
+//        updateFavorites();
         View loadingIndicator = findViewById(R.id.loading_indicator);
         loadingIndicator.setVisibility(View.GONE);
 
@@ -172,6 +233,8 @@ public class MoviesActivity extends AppCompatActivity implements LoaderManager.L
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 }
 
 

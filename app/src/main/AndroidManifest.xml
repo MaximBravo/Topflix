@@ -34,6 +34,11 @@
                 <action android:name="android.intent.action.SETTING" />
             </intent-filter>
         </activity>
+        <provider
+            android:name=".data.FavoritesProvider"
+            android:authorities="com.maximbravo.topflix.provider"
+            android:exported="false">
+        </provider>
     </application>
 
 </manifest>
